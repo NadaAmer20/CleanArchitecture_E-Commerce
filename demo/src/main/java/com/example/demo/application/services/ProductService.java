@@ -3,6 +3,8 @@ package com.example.demo.application.services;
 import com.example.demo.application.dto.CreateProductDto;
 import com.example.demo.domain.models.Product;
 import com.example.demo.domain.repositories.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,19 +13,22 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepo;
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
     public ProductService(ProductRepository productRepo) {
         this.productRepo = productRepo;
     }
 
     public Product create(CreateProductDto dto) {
+        logger.info("Creating product with name: {}", dto.getName());
         Product product = Product.builder()
                 .name(dto.getName())
                 .price(dto.getPrice())
                 .stock(dto.getStock())
                 .build();
-
+        logger.info("Product created with ID: {}", product.getId());
         return productRepo.save(product);
+
     }
 
     public List<Product> listAll() {
