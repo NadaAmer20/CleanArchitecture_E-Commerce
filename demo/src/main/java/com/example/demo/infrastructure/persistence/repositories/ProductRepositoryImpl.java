@@ -1,7 +1,7 @@
-package infrastructure.persistence.repositories;
+package com.example.demo.infrastructure.persistence.repositories;
 
-import domain.models.Product;
-import domain.repositories.ProductRepository;
+import com.example.demo.domain.models.Product;
+import com.example.demo.domain.repositories.ProductRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,5 +29,16 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> findAll() {
         return jpaRepo.findAll();
+    }
+
+
+    @Override
+    public List<Product> findByNameContainingIgnoreCase(String name) {
+        return jpaRepo.findByNameContainingIgnoreCase(name);
+    }
+
+    @Override
+    public void delete(Product product) {
+        jpaRepo.delete(product);
     }
 }
