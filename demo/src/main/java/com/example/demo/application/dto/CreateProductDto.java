@@ -22,4 +22,7 @@ public class CreateProductDto {
     @NotNull
     @Min(0)
     private Integer stock;
+    @NotNull
+    private Long categoryId;
+
 }
