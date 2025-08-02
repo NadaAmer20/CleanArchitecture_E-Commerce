@@ -1,22 +1,16 @@
 package com.example.demo.domain.models;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.demo.application.dto.RoleType;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "roles")
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Role {
-    @Id @GeneratedValue Long id;
-    String name;
+    @Id @GeneratedValue
+    private Long id;
 
-    public Role(String name) {
-        this.name = name;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(unique = true)
+    private RoleType name;
 }

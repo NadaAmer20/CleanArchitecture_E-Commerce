@@ -3,6 +3,7 @@ package com.example.demo.application.services;
 import com.example.demo.application.Response.ApiResponse;
 import com.example.demo.application.dto.LoginRequest;
 import com.example.demo.application.dto.RegisterRequest;
+import com.example.demo.application.dto.RoleType;
 import com.example.demo.domain.models.Role;
 import com.example.demo.domain.models.User;
 import com.example.demo.domain.repositories.RoleRepository;
@@ -44,10 +45,10 @@ public class AuthService {
             return ApiResponse.error("Email already exists");
         }
 
-        Role role = roleRepository.findByName("USER")
+         Role role = roleRepository.findByName(RoleType.USER)
                 .orElseGet(() -> {
                     logger.info("Default role USER not found, creating...");
-                    return roleRepository.save(new Role("USER"));
+                    return roleRepository.save(Role.builder().name(RoleType.USER).build());
                 });
 
         User user = new User();
@@ -78,8 +79,8 @@ public class AuthService {
 
         logger.info("Login successful for user: {}", user.getUsername());
 
-        String token = jwtUtil.generateToken(user.getUsername(), 60 * 60 * 1000);
-        String refreshToken = jwtUtil.generateToken(user.getUsername(), 7 * 24 * 60 * 60 * 1000);
+        String token = jwtUtil.generateToken(user, 60 * 60 * 1000);
+        String refreshToken = jwtUtil.generateToken(user, 7 * 24 * 60 * 60 * 1000);
         return ApiResponse.ok("Login successful", Map.of("token", token, "refreshToken", refreshToken));
     }
 }

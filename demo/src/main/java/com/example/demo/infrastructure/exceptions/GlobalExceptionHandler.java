@@ -25,6 +25,6 @@ public class GlobalExceptionHandler {
         errorBody.put("error", status.getReasonPhrase());
         errorBody.put("message", ex.getMessage());
 
-        return new ResponseEntity<>(errorBody, status);  
+        return new ResponseEntity<>(errorBody, status);
     }
 }

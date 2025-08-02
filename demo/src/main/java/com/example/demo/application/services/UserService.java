@@ -29,6 +29,11 @@ public class UserService {
         logger.info("Found {} users matching the search.", users.size());
         return users;
     }
+    public User getUserEntityById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
 
     public UserDto getUserById(Long id) {
         logger.info("Fetching user with ID: {}", id);
@@ -53,9 +58,8 @@ public class UserService {
 
     private UserDto mapToDto(User user) {
         List<String> roleNames = user.getRoles().stream()
-                .map(Role::getName)
+                .map(role -> role.getName().name())
                 .toList();
-
         logger.debug("Mapping user to DTO: {}", user.getUsername());
         return new UserDto(
                 user.getId(),

@@ -1,9 +1,11 @@
 package com.example.demo.infrastructure.security;
+import com.example.demo.domain.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.function.Function;
 
 import io.jsonwebtoken.security.Keys;
@@ -14,6 +16,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -24,15 +27,20 @@ public class JwtUtil {
     private SecretKey getSignKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
-    public String generateToken(String username, long expiration) {
+
+    public String generateToken(User user, long expirationMillis) {
+        List<String> roles = user.getRoles().stream()
+                .map(role -> role.getName().name()) // Assuming Role.name is enum RoleType
+                .collect(Collectors.toList());
+
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(user.getUsername())
+                .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
                 .signWith(SignatureAlgorithm.HS256, getSignKey())
                 .compact();
     }
-
 
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
@@ -65,7 +73,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    public  Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
